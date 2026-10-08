@@ -1,6 +1,6 @@
 # Agentic SDLC kit
 
-A skills-only version of the agentic SDLC from *The AI-Native SDLC Playbook*, for a solo developer who builds features from an HTML prototype. Seven skills, one subagent, one hook, one issue script and a few templates; no framework to install.
+A skills-only version of the agentic SDLC from Anthropic's *The AI-Native SDLC Playbook*, for a solo developer who builds features from an HTML prototype. Seven skills, one subagent, one hook, one issue script and a few templates; no framework to install.
 
 ## The flow
 
