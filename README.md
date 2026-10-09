@@ -42,13 +42,22 @@ A skills-only version of the agentic SDLC from *The AI-Native SDLC Playbook*, fo
 ## Install into a project
 
 ```bash
-KIT=~/code/agentic-sdlc-kit
-cp -r $KIT/.claude/skills $KIT/.claude/agents $KIT/.claude/hooks $KIT/.claude/scripts <project>/.claude/
-# settings: copy if the project has none, otherwise merge the "hooks" block by hand
-cp -n $KIT/.claude/settings.json <project>/.claude/settings.json
-cp $KIT/templates/REVIEW.md <project>/REVIEW.md
-# then paste templates/CLAUDE.md.snippet into the project's CLAUDE.md and fill in the commands
+git clone https://github.com/jasonwblock/agentic-sdlc-kit.git ~/code/agentic-sdlc-kit   # once
+~/code/agentic-sdlc-kit/install.sh ~/code/my-project      # or run it from inside the project with no argument
 ```
+
+The installer:
+- **Checks** for `git`, `gh` and `npx`, and offers `git init` if the project isn't a repo.
+- **Asks a few questions:**
+  - the test, build, lint and start commands, pre-filled from `package.json`, a `Makefile`, `pyproject.toml`, `Cargo.toml` or `go.mod`;
+  - where the prototype lives;
+  - where issues come from (Linear, Jira, GitHub, a local file, or none), and whether skills may change issue status;
+  - whether to add the nightly triage workflow.
+- **Copies the kit** into `.claude/`. It merges its hook into an existing `.claude/settings.json` and backs up the old file.
+- **Writes a marked section into `CLAUDE.md`.** It creates the file, or appends below your own content.
+- **Adds `REVIEW.md`** if the project doesn't have one.
+
+`--yes` accepts every default. Re-running it updates the kit's files and can reconfigure the `CLAUDE.md` section. It never writes credentials; it only checks that the environment has them.
 
 **Requirements:**
 - `python3`, for the hook. Without it, every edit is blocked, by design (it fails closed).

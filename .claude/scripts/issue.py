@@ -78,7 +78,9 @@ def configured_tracker():
             for line in f:
                 m = re.match(r"^\s*[-*]?\s*Tracker:\s*`?([^`\s]+)`?", line)
                 if m:
-                    return m.group(1)
+                    value = m.group(1)
+                    # "none", or a template placeholder like <linear or {{TRACKER}}, means not configured
+                    return None if value.lower() == "none" or value[0] in "<{" else value
     return None
 
 

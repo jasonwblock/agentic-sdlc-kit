@@ -1,10 +1,10 @@
-<!-- Add to the project's CLAUDE.md (keep the whole file under a page). -->
-
+<!-- agentic-sdlc-kit:start (install.sh writes this section; re-running it can replace it. Fill in {{…}} if you copy it by hand.) -->
 ## Commands
-- Test: `<one command>`  (healthy: `<what passing output looks like>`)
-- Build: `<one command>`
-- Lint: `<one command>`
-- Start the app: `<command>`  (on `http://localhost:<port>`)
+- Test: `{{TEST_CMD}}`
+- Build: `{{BUILD_CMD}}`
+- Lint: `{{LINT_CMD}}`
+- Start the app: `{{START_CMD}}` (on {{APP_URL}})
+<!-- TBD means not set yet: /build fills it in once the app exists. -->
 
 ## Verifying your work
 Run test, build and lint before reporting any task complete, and paste the output.
@@ -12,16 +12,17 @@ If a test fails, fix the code, not the test. Never skip or delete a failing test
 
 ## How work flows here
 - Work items live in `work/<date>-<slug>/`: intent.md → prototype/ → spec.md → plan.md → verify.md.
-- Prototype: `<path to the living prototype, e.g. prototype/index.html>`
+- Prototype: {{PROTOTYPE}}
 - Skills: /intent, /prototype, /spec, /build, /fix, /ship, /triage.
 - Files listed in `work/*/locks.txt` were approved by a person; never edit them.
 
 ## Issues
-- Tracker: <linear | jira | github | file:path/to/issues.json>   (how a bare id like ENG-123 or 42 is read)
-- Status updates: off   (on: skills move issues to "<In progress state>" at intent approval and "<In review state>" when the PR opens)
-- Triage: <e.g. linear --team ENG --state Triage | github --label triage>
-<!-- Credentials come from the environment, never from this file:
+- Tracker: {{TRACKER}}
+- Status updates: {{STATUS_UPDATES}}
+- Triage: {{TRIAGE}}
+<!-- Tracker: linear | jira | github | file:<path> | none. Credentials come from the environment, never this file:
      Linear LINEAR_API_KEY · Jira JIRA_BASE_URL + JIRA_EMAIL + JIRA_API_TOKEN (or JIRA_PAT) · GitHub the gh CLI -->
+<!-- agentic-sdlc-kit:end -->
 
 ## Things Claude gets wrong
 <!-- When the same mistake happens twice, add a one-line rule here. -->

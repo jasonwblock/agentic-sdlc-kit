@@ -1,9 +1,7 @@
 # Using the agentic SDLC skills
 
 ## One-time setup per project
-1. Copy the kit into the project (README, "Install into a project").
-2. Fill in `CLAUDE.md`'s **Commands** (test, build, lint, start the app), and its **Issues** section if you use a tracker.
-3. Optional: point `Prototype:` in `CLAUDE.md` at an existing HTML prototype. Otherwise the first `/prototype` creates one.
+Run `~/code/agentic-sdlc-kit/install.sh <project>` and answer its questions: the commands, the prototype path, and where issues come from. Then start a new Claude Code session in the project.
 
 ## A feature, start to finish
 | Step | You type | You do |
