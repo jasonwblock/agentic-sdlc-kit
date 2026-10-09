@@ -43,11 +43,13 @@ A skills-only version of the agentic SDLC from Anthropic's *The AI-Native SDLC P
 
 ```bash
 git clone https://github.com/jasonwblock/agentic-sdlc-kit.git ~/code/agentic-sdlc-kit   # once
-~/code/agentic-sdlc-kit/install.sh ~/code/my-project      # or run it from inside the project with no argument
+~/code/agentic-sdlc-kit/install.sh                      # asks for the project folder; or pass it: install.sh ~/code/my-project
 ```
 
 The installer:
-- **Checks** for `git`, `gh` and `npx`, and offers `git init` if the project isn't a repo.
+- **Asks for the project's folder,** defaulting to the current one, and offers to create it if it doesn't exist.
+- **Offers to create a git repository** (`git init`) if the folder isn't one. For a folder inside another repository, it asks whether to keep using that one.
+- **Checks** for `gh` and `npx`.
 - **Asks a few questions:**
   - the test, build, lint and start commands, pre-filled from `package.json`, a `Makefile`, `pyproject.toml`, `Cargo.toml` or `go.mod`;
   - where the prototype lives;

@@ -3,7 +3,7 @@
 
   install.sh [project-dir] [--yes]
 
-project-dir defaults to the current directory. --yes accepts every default without asking
+project-dir is asked for when omitted (default: the current directory). --yes accepts every default without asking
 (also the behaviour when stdin isn't a terminal); --ask forces the questions even then.
 Re-running it updates the kit's files and can reconfigure the CLAUDE.md block. It never
 writes credentials: it only checks whether the environment has them.
@@ -300,32 +300,41 @@ def configure(target, ui, cfg_existing_block):
 
 def main():
     ap = argparse.ArgumentParser(description="Install the agentic SDLC kit into a project.")
-    ap.add_argument("project", nargs="?", default=".")
+    ap.add_argument("project", nargs="?", help="the project's folder (asked for when omitted)")
     ap.add_argument("-y", "--yes", action="store_true", help="accept every default without asking")
     ap.add_argument("--ask", action="store_true", help="ask even when stdin isn't a terminal (scripted answers)")
     args = ap.parse_args()
     ui = UI(interactive=(args.ask or sys.stdin.isatty()) and not args.yes)
-    target = os.path.abspath(os.path.expanduser(args.project))
+    print(ui.b("Agentic SDLC kit"))
 
-    print(ui.b("Agentic SDLC kit") + f"  ->  {target}")
+    ui.section("Project")
+    project = args.project or ui.ask("Project directory", os.getcwd())
+    target = os.path.abspath(os.path.expanduser(project))
     if os.path.realpath(target) == os.path.realpath(KIT):
-        sys.exit("That's the kit itself. Run this from a project, or pass the project's folder.")
+        sys.exit("That's the kit itself. Choose the project's folder.")
+    if os.path.exists(target) and not os.path.isdir(target):
+        sys.exit(f"{target} is a file, not a folder.")
     if not os.path.isdir(target):
         if not ui.yes(f"{target} doesn't exist. Create it", True):
             sys.exit("Nothing installed.")
         os.makedirs(target)
+        print(f"  created {target}")
+    if shutil.which("git") is None:
+        sys.exit("git is required: the skills work in branches and commits.")
+    code, top = run(["git", "rev-parse", "--show-toplevel"], cwd=target)
+    if code == 0 and os.path.realpath(top) == os.path.realpath(target):
+        ui.note("Already a git repository.")
+    elif code == 0 and not ui.yes(f"This folder is inside the git repository at {top}. Create a separate one here", False):
+        ui.note(f"Using the repository at {top}.")
+    elif code == 0 or ui.yes("Create a git repository here (git init)", True):
+        run(["git", "init", "-q", "-b", "main"], cwd=target)
+        print("  created a git repository (branch main)")
+    else:
+        ui.note("Skipped. The skills need one before /intent commits anything.")
 
     ui.section("Checks")
-    for tool, why, required in (("git", "branches and commits", True), ("gh", "/ship and /triage", False),
-                                ("npx", "screenshots via npx playwright (or use the Playwright MCP)", False)):
-        ok = shutil.which(tool) is not None
-        print(f"  {'ok ' if ok else 'MISSING'} {tool}: {why}")
-        if required and not ok:
-            sys.exit(f"{tool} is required.")
-    is_repo = run(["git", "rev-parse", "--is-inside-work-tree"], cwd=target)[0] == 0
-    if not is_repo and ui.yes("Not a git repository. Run git init", True):
-        run(["git", "init", "-q", "-b", "main"], cwd=target)
-        is_repo = True
+    for tool, why in (("gh", "/ship and /triage"), ("npx", "screenshots via npx playwright (or use the Playwright MCP)")):
+        print(f"  {'ok     ' if shutil.which(tool) else 'missing'} {tool}: {why}")
 
     claude_md = os.path.join(target, "CLAUDE.md")
     has_block = os.path.exists(claude_md) and START in open(claude_md, encoding="utf-8").read()
