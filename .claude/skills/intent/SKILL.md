@@ -35,9 +35,9 @@ Input: $ARGUMENTS
    - **If an app exists,** read `CLAUDE.md`, the data schema, the auth and roles model, the jobs and the integrations this touches.
    - Don't ask anything the code or the issue already answers. The issue's acceptance notes become the intent's Outcome, not questions.
 2. **Interview in one batch.**
-   - Ask **at most 5 questions** in one message, numbered.
-   - Give **each question a proposed default**, so the user can reply "defaults" or answer only the ones they disagree with.
-   - Ask one follow-up round only if an answer opens a real gap.
+   - Ask **at most 4 questions** in one AskUserQuestion call (see *Asking the user*).
+   - Make **your proposed default the first, recommended option** of each question, so accepting all of them takes one click per question.
+   - Make one follow-up call only if an answer opens a real gap.
    - Cover, in order of what's still unknown:
      - the problem, who has it, and what better looks like;
      - what's out of scope;
@@ -57,7 +57,11 @@ Input: $ARGUMENTS
      - If the issue has a `branch` (Linear supplies one), use it, so the tracker links the branch and the PR.
      - Otherwise use `work/<ID>-<short-name>`, keeping the ID as the tracker writes it (`work/ENG-123-weekly-payout`), since Jira links by key.
    - **The file:** `work/<YYYY-MM-DD>-<slug>/intent.md`, from the template below, with the issue's `url` or `path#id` in `Source:`.
-4. **Show the user the intent** and ask for corrections. Apply them.
+4. **Show the user the intent, then ask in one AskUserQuestion call:**
+   - **Any open questions still in the draft,** one question each, with its default first. Answered ones move into the right section. Only questions the user explicitly leaves open stay under *Open questions*, with their defaults.
+   - **The approval:** "Approve (Recommended)" or "Request changes".
+
+   Apply any changes, then ask again.
 5. **On approval:**
    1. set `Status: approved`;
    2. run `echo "work/<folder>/intent.md" >> work/<folder>/locks.txt`;
@@ -72,6 +76,15 @@ Input: $ARGUMENTS
    - **If the script exits with 3** (not supported for this source), skip the step quietly.
    - **For a local file,** update its status field yourself only if the file is in the repo and isn't a database.
 7. **Tell the user the next step:** `/prototype <ID or slug>` if there's UI, otherwise `/spec <ID or slug>`.
+
+## Asking the user
+Use the **AskUserQuestion** tool for every question and every approval, not a question in prose.
+- **Batching:** up to 4 questions per call, with 2–4 options each.
+- **The default** is the first option, labelled "(Recommended)".
+- **Wording:** labels are short (1–5 words) and the reasoning goes in each option's description. Headers are at most 12 characters.
+- **Free text:** the tool always adds "Other" for a typed answer, so never add an "Other" option yourself.
+- **An approval is a question too:** "Approve (Recommended)" or "Request changes". Apply whatever the user types under Other, then ask again.
+- **Without AskUserQuestion** (a headless run, or another agent harness), ask in one numbered message instead, with the default after each question.
 
 ## Template
 
@@ -96,7 +109,7 @@ What is true when this is done, in observable terms.
 - Privacy:
 ## Constraints
 ## Open questions
-Each with the default that applies if nobody answers.
+Only what the user chose to leave open, each with the default that applies if nobody answers.
 ```
 
 ## Rules

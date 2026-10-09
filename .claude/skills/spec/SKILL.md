@@ -37,16 +37,28 @@ Work item: $ARGUMENTS: a slug, a work folder, or an issue id (`ENG-123`, `#45`, 
    - every screen in `prototype-notes.md`;
    - every rule and permission in the intent;
    - what happens to existing data.
-5. **Present only the flags**, each with a recommended default:
-   > **F-1** The prototype deletes chores; the intent says history is kept. **Default:** archive instead of delete, hidden from lists.
+5. **Present only the flags, using AskUserQuestion:**
+   - **One question per flag.** The question states the conflict, for example "The prototype deletes chores, but the intent keeps history." Its options are your recommended resolution first, then 1–3 real alternatives.
+   - **Up to 4 flags:** ask them all in one call.
+   - **More than 4:** first ask "Accept all <n> recommended resolutions (Recommended)" or "Review them one by one". Then, only if the user wants to review, ask in batches of 4.
+   - **No flags:** ask just for the approval: "Approve (Recommended)" or "Request changes".
 
-   Ask the user to reply "defaults" or to override specific flags by number.
+   The user's answers to the flags are the approval.
 6. **On approval:**
    1. write each flag's resolution into the spec;
    2. set `Status: approved`;
    3. append `work/<folder>/spec.md` to `locks.txt`;
    4. commit with the message `spec(<slug>): <title>`.
 7. **Next step:** `/build <slug>`.
+
+## Asking the user
+Use the **AskUserQuestion** tool for every question and every approval, not a question in prose.
+- **Batching:** up to 4 questions per call, with 2–4 options each.
+- **The default** is the first option, labelled "(Recommended)".
+- **Wording:** labels are short (1–5 words) and the reasoning goes in each option's description. Headers are at most 12 characters.
+- **Free text:** the tool always adds "Other" for a typed answer, so never add an "Other" option yourself.
+- **An approval is a question too:** "Approve (Recommended)" or "Request changes". Apply whatever the user types under Other, then ask again.
+- **Without AskUserQuestion** (a headless run, or another agent harness), ask in one numbered message instead, with the default after each question.
 
 ## Template
 

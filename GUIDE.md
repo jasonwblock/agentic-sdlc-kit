@@ -6,10 +6,10 @@ Run `~/code/agentic-sdlc-kit/install.sh <project>` and answer its questions: the
 ## A feature, start to finish
 | Step | You type | You do |
 |---|---|---|
-| 1 | `/intent <idea or issue>` | Answer up to 5 questions (or reply "defaults"), correct the draft, say "approved" |
-| 2 | `/prototype <id>` *(UI only)* | Look at the prototype, ask for changes, say "approved" |
-| 3 | `/spec <id>` | Read the flags; reply "defaults" or override by number (`F-2: keep history`) |
-| 4 | `/build <id>` | Accept the plan; then wait. It builds, tests itself and runs a fresh verifier |
+| 1 | `/intent <idea or issue>` | Answer up to 4 questions, correct the draft, approve |
+| 2 | `/prototype <id>` *(UI only)* | Look at the prototype, ask for changes, approve |
+| 3 | `/spec <id>` | Pick a resolution for each flag, or accept them all at once |
+| 4 | `/build <id>` | Approve the plan, then wait. It builds, tests itself and runs a fresh verifier |
 | 5 | `/ship <id>` | Review the PR and merge it. That's the only merge |
 
 **`<idea or issue>`** can be plain words or an issue:
@@ -18,6 +18,8 @@ Run `~/code/agentic-sdlc-kit/install.sh <project>` and answer its questions: the
 - a local file: `TASKS.md#T-4`, `backlog.json#BL-1`.
 
 **`<id>`** is the issue ID or the work item's slug. Leave it out and the skill picks the most recent work item and tells you which one.
+
+Every question and approval is a Claude Code multiple-choice prompt, with the recommended answer first. Choose **Other** to type your own answer or ask for changes.
 
 ## A bug
 `/fix <description or issue>`, then `/ship <id>`. It writes a failing test first, locks the test, and fixes the code without touching it.

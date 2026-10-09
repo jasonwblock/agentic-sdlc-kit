@@ -13,9 +13,9 @@ A skills-only version of the agentic SDLC from Anthropic's *The AI-Native SDLC P
 
 | Skill | Stage | Writes | Your part |
 |---|---|---|---|
-| `/intent` | Plan | `work/<date>-<slug>/intent.md` | Answer ≤5 questions (defaults offered), correct, approve |
+| `/intent` | Plan | `work/<date>-<slug>/intent.md` | Answer ≤4 multiple-choice questions, correct, approve |
 | `/prototype` | Design | Changes to the **living prototype**; a snapshot in `work/…/prototype/`, `screens/`, `prototype-notes.md` | Iterate, approve |
-| `/spec` | Design | `spec.md` with `AC-n` acceptance criteria and `F-n` flags | Reply "defaults" or override flags |
+| `/spec` | Design | `spec.md` with `AC-n` acceptance criteria and `F-n` flags | Pick a resolution per flag, or accept all |
 | `/build` | Build + Test | `plan.md`, the code and tests, `verify.md` | Accept the plan |
 | `/fix` | Bug | `bug.md`, a locked failing test, the fix, `verify.md` | Rarely anything |
 | `/ship` | Deploy | The PR, worked until green | Review and merge |

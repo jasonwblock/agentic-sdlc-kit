@@ -27,7 +27,11 @@ Work item: $ARGUMENTS: a slug, a work folder, or an issue id (`ENG-123`, `#45`, 
    comm -23 <(grep -o 'AC-[0-9]\+' work/<folder>/spec.md | sort -u) <(grep -o 'AC-[0-9]\+' work/<folder>/plan.md 2>/dev/null | sort -u)
    ```
    Run it after writing `plan.md`. If it prints any IDs, fix the plan. Do the same for screen ids, using `prototype-notes.md` as the source.
-4. Show the plan to the user. When they accept it:
+4. Get the user's approval:
+   - **In plan mode,** exiting plan mode is the approval prompt.
+   - **Otherwise,** use AskUserQuestion: "Approve the plan (Recommended)" or "Request changes".
+
+   Once they accept it:
    - write `work/<folder>/plan.md`;
    - run the coverage check;
    - commit with the message `plan(<slug>): <title>`.
@@ -62,7 +66,16 @@ Tell the user:
 - where the screenshots are;
 - the next step: `/ship <slug>`.
 
+## Asking the user
+Use the **AskUserQuestion** tool for every question and every approval, not a question in prose.
+- **Batching:** up to 4 questions per call, with 2–4 options each.
+- **The default** is the first option, labelled "(Recommended)".
+- **Wording:** labels are short (1–5 words) and the reasoning goes in each option's description. Headers are at most 12 characters.
+- **Free text:** the tool always adds "Other" for a typed answer, so never add an "Other" option yourself.
+- **An approval is a question too:** "Approve (Recommended)" or "Request changes". Apply whatever the user types under Other, then ask again.
+- **Without AskUserQuestion** (a headless run, or another agent harness), ask in one numbered message instead, with the default after each question.
+
 ## Rules
-- **Never edit** anything listed in `work/*/locks.txt`, the living prototype, or tests that existed before this build, unless the spec says to change them. If a locked artifact is wrong, stop and tell the user.
+- **Never edit** anything listed in `work/*/locks.txt`, the living prototype, or tests that existed before this build, unless the spec says to change them. If a locked artifact is wrong, stop and ask with AskUserQuestion: "Stop so I can reopen it (Recommended)", or "Build it as specified". Say what's wrong in the question.
 - **Never skip, delete or weaken a failing test** to get green.
 - **Show the output of every command you rely on.** Don't summarize it.

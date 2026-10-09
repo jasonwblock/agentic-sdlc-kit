@@ -16,13 +16,13 @@ Work item: $ARGUMENTS: a slug, a work folder, or an issue id (`ENG-123`, `#45`, 
 1. **Read** the work item's `intent.md` (it must be approved) and `CLAUDE.md`.
 2. **Find the prototype.**
    - **Look for it:** first the `Prototype:` line in `CLAUDE.md`; otherwise a `prototype/` folder; otherwise an HTML file with `data-screen` or `data-testid` markers.
-   - **If you find more than one,** ask which.
-   - **If `CLAUDE.md` doesn't record the path yet,** add a `Prototype: <path>` line to it once the user confirms.
+   - **If you find more than one,** ask which with AskUserQuestion, one option per candidate.
+   - **If `CLAUDE.md` doesn't record the path yet,** confirm the path in the same call. Then add a `Prototype: <path>` line to `CLAUDE.md`.
 3. **Choose the starting point:**
    - **A prototype exists (the normal case): modify it in place.**
      - Add or change only the screens this feature needs.
      - Keep every other screen as it is.
-     - If the real app has visibly moved on from the prototype on the screens this feature touches, say so. Offer to bring those screens in line with the app first, as a separate commit.
+     - If the real app has visibly moved on from the prototype on the screens this feature touches, ask with AskUserQuestion: "Sync those screens from the app first (Recommended)", as a separate commit, or "Keep the prototype as it is".
    - **No prototype, but an app exists:**
      - Create `prototype/index.html`, seeded from the app: its CSS variables or theme, its components' look, and the screens next to this feature, rebuilt as static screens.
      - Fixtures follow the real data schema.
@@ -37,7 +37,7 @@ Work item: $ARGUMENTS: a slug, a work folder, or an issue id (`ENG-123`, `#45`, 
 5. **Iterate.**
    - After each change, tell the user how to view it: the file path, or `npx serve prototype`, with the `#screen` links that changed.
    - If a browser tool is available (Playwright MCP, or `npx playwright screenshot`), look at your own result before showing it.
-   - Repeat until the user approves.
+   - After each round, ask with AskUserQuestion: "Approve (Recommended)" or "More changes". The user types the changes under Other. Repeat until they approve.
 6. **On approval:**
    1. Write `work/<folder>/prototype-notes.md`:
       - the screens added and changed, with their `#ids`;
@@ -49,6 +49,15 @@ Work item: $ARGUMENTS: a slug, a work folder, or an issue id (`ENG-123`, `#45`, 
    4. **Lock the approved files:** append `work/<folder>/prototype/`, `work/<folder>/screens/` and `work/<folder>/prototype-notes.md` to `work/<folder>/locks.txt`.
    5. Commit the living prototype's changes, the snapshot and the notes with the message `prototype(<slug>): <summary>`.
 7. **Next step:** `/spec <slug>`.
+
+## Asking the user
+Use the **AskUserQuestion** tool for every question and every approval, not a question in prose.
+- **Batching:** up to 4 questions per call, with 2–4 options each.
+- **The default** is the first option, labelled "(Recommended)".
+- **Wording:** labels are short (1–5 words) and the reasoning goes in each option's description. Headers are at most 12 characters.
+- **Free text:** the tool always adds "Other" for a typed answer, so never add an "Other" option yourself.
+- **An approval is a question too:** "Approve (Recommended)" or "Request changes". Apply whatever the user types under Other, then ask again.
+- **Without AskUserQuestion** (a headless run, or another agent harness), ask in one numbered message instead, with the default after each question.
 
 ## Rules
 - Never delete or restyle screens outside this feature's scope without asking.

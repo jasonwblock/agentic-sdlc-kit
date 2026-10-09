@@ -12,7 +12,7 @@ Work item: $ARGUMENTS: a slug, a work folder, or an issue id (`ENG-123`, `#45`, 
 ## Steps
 
 1. **Check before opening the PR.**
-   - `verify.md` exists, and it lists no open blocking findings. If it does, list them and ask whether to ship anyway.
+   - `verify.md` exists, and it lists no open blocking findings. If it does, ask with AskUserQuestion, listing the findings in the question: "Stop and fix them first (Recommended)" or "Ship anyway".
    - The branch isn't `main` or `master`.
    - The working tree is clean.
 2. **Release the test locks.**
@@ -55,6 +55,15 @@ Work item: $ARGUMENTS: a slug, a work folder, or an issue id (`ENG-123`, `#45`, 
    - the PR URL;
    - whether the checks are green;
    - what's waiting on the user (approval, and the comments you didn't act on).
+
+## Asking the user
+Use the **AskUserQuestion** tool for every question and every approval, not a question in prose.
+- **Batching:** up to 4 questions per call, with 2–4 options each.
+- **The default** is the first option, labelled "(Recommended)".
+- **Wording:** labels are short (1–5 words) and the reasoning goes in each option's description. Headers are at most 12 characters.
+- **Free text:** the tool always adds "Other" for a typed answer, so never add an "Other" option yourself.
+- **An approval is a question too:** "Approve (Recommended)" or "Request changes". Apply whatever the user types under Other, then ask again.
+- **Without AskUserQuestion** (a headless run, or another agent harness), ask in one numbered message instead, with the default after each question.
 
 ## Rules
 - **Never merge,** never push to `main` or `master`, never force-push, never skip hooks (`--no-verify`).
